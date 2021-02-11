@@ -6,9 +6,9 @@ import time
 
 
 def main(characters):
-    print(f"There are {len(characters[1:])} characters")
-    new_order = order_characters(characters[1:])
-    print(f"Target characters:\n{characters[1:]}")
+    print(f"There are {len(characters)} characters")
+    new_order = order_characters(characters)
+    print(f"Target characters:\n{characters}")
     print(f"New order:\n{new_order}")
     root = Tk()
     labelfont = ('times', 16, 'bold')  # family, size, style
@@ -136,8 +136,8 @@ if __name__ == '__main__':
                 stats_dict = {}
     except FileNotFoundError as e:
         stats_dict = {}
-    if len(sys.argv) == 1:
-        main([None, 'n̈', '⁊', 'oᷤ', 't', 'ſ', 'ſt', 'ṗ', 'ꝛ', 'q̄', 'q̇', 'ṁ', 'ꝛ', 'u̇', 'ũ', 'ṅ',
-              'ꝫ', 'ō', 'ṅ', 'u̇', 'p̄', 'ꝑ', 'ḋ', 'ē', 'j̄', 'ė', 'ꝛ̇', 'ī', 'ȯ', 'ȧ', 'r̈', 'ḣ', 'aᷤ'])
-    else:
-        main(sys.argv)
+
+    with open("characters.conf", "r") as chars_file:
+        characters = chars_file.read().replace(' ', '').split(',')
+
+    main(characters)
