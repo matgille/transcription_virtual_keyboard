@@ -3,14 +3,14 @@
 
 Ce programme permet d'afficher un clavier virtuel, conçu à faciliter la transcription
 d'écritures manuscrites médiévales comprenant des abréviations et des caractères aujourd'hui
-disparus. Il est assez pratique en combinaison avec des outils comme eScriptorium par exemple 
+non utilisés aujourd'hui. Il est assez pratique en combinaison avec des outils comme eScriptorium par exemple 
 ([dépôt git](https://gitlab.inria.fr/scripta/escriptorium)).
 
 ## Installation
 
 ```
-git clone url.git
-cd url
+git clone https://gitlab.huma-num.fr/mgillelevenson/clavier_virtuel_transcription.git
+cd clavier_virtuel_transcription
 python3 -m venv env_clavier_virtuel
 pip3 install -r requirements.txt
 ```
