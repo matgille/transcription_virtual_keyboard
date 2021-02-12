@@ -40,7 +40,7 @@ def save_and_exit():
 def save_frequency():
     '''
     On enregiste et on imprime le dictionnaire contenant les statistiques
-    :return:
+    :return: None
     '''
     print(stats_dict)
     with open('stats.json', 'w') as json_file:
@@ -54,8 +54,8 @@ def order_characters(target_characters):
     '''
     Cette fonction permet d'ordonner la liste de caractères
     en fonction de leur fréquence d'utilisation.
-    :param target_characters:
-    :return:
+    :param target_characters: La liste de caractères à afficher
+    :return: La liste ordonnée
     '''
     try:
         with open('stats.json', 'r') as json_file:
@@ -111,6 +111,10 @@ class character:
         print(self.char)
 
     def click(self):
+        """
+        On clique, on copie, on colle.
+        :return: None
+        """
         global click_number
         click_number += 1
         print(click_number)
@@ -128,8 +132,8 @@ class character:
         Ici on va avoir des statistiques sur les boutons les plus utilisés.
         De la sorte on pourra adapter la position de chaque bouton pour être
         le plus ergonomique possible.
-        :param character:
-        :return:
+        :param character: Le caractère à ajouter à la table de fréquences
+        :return: None
         '''
         try:
             stats_dict[character] += 1
