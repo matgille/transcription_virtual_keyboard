@@ -138,6 +138,6 @@ if __name__ == '__main__':
         stats_dict = {}
 
     with open("characters.conf", "r") as chars_file:
-        characters = chars_file.read().replace(' ', '').split(',')
+        characters = chars_file.read().replace(' ', '').replace('\n', '').split(',')
 
     main(characters)
