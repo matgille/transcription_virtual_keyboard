@@ -11,6 +11,7 @@ def main(characters):
     print(f"Target characters:\n{characters}")
     print(f"New order:\n{new_order}")
     root = Tk()
+    root.title("cvirtuel")
     labelfont = ('times', 16, 'bold')  # family, size, style
     exit_button = Button(root, text='Save/Exit', command=save_and_exit)
     exit_button.grid(column=1, columnspan=2, row=1)
@@ -149,7 +150,10 @@ if __name__ == '__main__':
     except FileNotFoundError as e:
         stats_dict = {}
 
-    with open("characters.conf", "r") as chars_file:
-        characters = chars_file.read().replace(' ', '').replace('\n', '').split(',')
-
+    try:
+        with open("characters.conf", "r") as chars_file:
+            characters = chars_file.read().replace(' ', '').replace('\n', '').split(',')
+    except FileNotFoundError as error:
+        print("Veuillez créer le fichier characters.conf est y ajouter les caractères à afficher.")
+        exit()
     main(characters)
