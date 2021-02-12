@@ -52,8 +52,8 @@ def exit_app():
 
 def order_characters(target_characters):
     '''
-    Cette fonction permet d'ajouter l'ordre de la liste de charactères
-    pour que les plus utilisés soient affichés en premier.
+    Cette fonction permet d'ordonner la liste de caractères
+    en fonction de leur fréquence d'utilisation.
     :param target_characters:
     :return:
     '''
