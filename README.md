@@ -12,6 +12,7 @@ non utilisés aujourd'hui. Il est assez pratique en combinaison avec des outils 
 git clone https://gitlab.huma-num.fr/mgillelevenson/clavier_virtuel_transcription.git
 cd clavier_virtuel_transcription
 python3 -m venv env_clavier_virtuel
+source env_clavier_virtuel/bin/activate
 pip3 install -r requirements.txt
 ```
 
