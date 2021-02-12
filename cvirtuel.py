@@ -12,8 +12,8 @@ def main(characters):
     print(f"New order:\n{new_order}")
     root = Tk()
     labelfont = ('times', 16, 'bold')  # family, size, style
-    exit_button = Button(root, text='Exit', command=save_frequencies)
-    exit_button.grid(column=1, row=1)
+    exit_button = Button(root, text='Save/Exit', command=save_and_exit)
+    exit_button.grid(column=1, columnspan=2, row=1)
 
     # ici on va créer une instance de character() pour chacun des caractères passés, et on organise
     # la grille. Revoir le tout, ce n'est pas très clair.
@@ -32,15 +32,20 @@ def main(characters):
 
     root.mainloop()
 
+def save_and_exit():
+    save_frequency()
+    exit_app()
 
-def save_frequencies():
+def save_frequency():
     '''
-    On quitte et on imprime le dictionnaire contenant les statistiques
+    On enregiste et on imprime le dictionnaire contenant les statistiques
     :return:
     '''
     print(stats_dict)
     with open('stats.json', 'w') as json_file:
         json.dump(stats_dict, json_file)
+
+def exit_app():
     exit(0)
 
 
@@ -97,7 +102,6 @@ class character:
     def __init__(self, char, root, labelfont, column, row):
         self.position = [column, row]
         self.char = char
-        # print(f"Character: {self.char}; Position: {self.position}")
         self.button = Button(root, text=self.char, command=self.click)
         self.button.grid(column=column, row=row)
         self.button.config(font=labelfont)  # use a larger font
@@ -107,6 +111,12 @@ class character:
         print(self.char)
 
     def click(self):
+        global click_number
+        click_number += 1
+        print(click_number)
+        if click_number % 20 == 0:
+            print("Enregistrement de la fréquence")
+            save_frequency()
         print(f"You just clicked on {self.char}")
         self.add_to_table(self.char)
         pyperclip.copy(self.char)
@@ -128,6 +138,8 @@ class character:
 
 
 if __name__ == '__main__':
+
+    click_number = 0
     try:
         with open('stats.json', 'r') as json_file:
             try:
