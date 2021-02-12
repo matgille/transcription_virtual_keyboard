@@ -105,8 +105,7 @@ class character:
         self.char = char
         self.button = Button(root, text=self.char, command=self.click)
         self.button.grid(column=column, row=row)
-        self.button.config(font=labelfont)  # use a larger font
-        self.button.config(height=1, width=3)  # initial size: lines,chars
+        self.button.config(font=labelfont, height=1, width=3)
 
     def __repr__(self):
         print(self.char)
