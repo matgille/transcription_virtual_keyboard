@@ -157,6 +157,6 @@ if __name__ == '__main__':
         with open("characters.conf", "r") as chars_file:
             characters = chars_file.read().replace(' ', '').replace('\n', '').split(',')
     except FileNotFoundError as error:
-        print("Veuillez créer le fichier characters.conf est y ajouter les caractères à afficher.")
+        print("Veuillez créer le fichier characters.conf et y ajouter les caractères à afficher.")
         exit()
     main(characters)
