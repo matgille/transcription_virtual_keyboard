@@ -42,6 +42,7 @@ def save_frequency():
     On enregiste et on imprime le dictionnaire contenant les statistiques
     :return: None
     '''
+    print("Enregistrement de la fréquence")
     print(stats_dict)
     with open('stats.json', 'w') as json_file:
         json.dump(stats_dict, json_file)
@@ -119,7 +120,6 @@ class character:
         click_number += 1
         print(click_number)
         if click_number % 20 == 0:
-            print("Enregistrement de la fréquence")
             save_frequency()
         print(f"You just clicked on {self.char}")
         self.add_to_table(self.char)
