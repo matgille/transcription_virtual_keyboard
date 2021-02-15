@@ -16,20 +16,21 @@ def main(characters):
     exit_button = Button(root, text='Save/Exit', command=save_and_exit)
     exit_button.grid(column=1, columnspan=2, row=1)
 
-    # ici on va créer une instance de character() pour chacun des caractères passés, et on organise
-    # la grille. Revoir le tout, ce n'est pas très clair.
-    nombre_lignes = len(new_order) // 2  # nombre de ligne visé
-    modulo = len(new_order) % 2  # on regarde si c'est divisible par deux
-    if modulo == 0:
-        nombre_lignes -= 1  # si ce n'est pas divisible, il faut ajouter une ligne à la première colonne.
+    # Organisation de la grille
+    n = 0
+    nombre_caractères = len(new_order)
+    nombre_lignes = 11 # nombre de lignes de chaque colonne = hauteur de l'interface graphique.
+    nombre_colonnes = nombre_caractères // nombre_lignes
+    reste = nombre_caractères % nombre_colonnes
+    print(f"Nombre de lignes: {nombre_lignes}\n Nombre de caracteres: {nombre_caractères}"
+          f"\n Nombre de caractères en excès: {reste}")
 
-    n = 1
     for char in new_order:
+        ligne = (n % nombre_lignes) + 2
+        colonne = (n // nombre_lignes)
+        character(char, root, labelfont, colonne, ligne)
         n += 1
-        if n <= nombre_lignes + 2:
-            character(char, root, labelfont, 1, n)
-        else:
-            character(char, root, labelfont, 2, n - nombre_lignes - 1)
+
 
     root.mainloop()
 
