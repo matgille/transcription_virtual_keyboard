@@ -13,23 +13,29 @@ def main(characters):
     root = Tk()
     root.title("cvirtuel")
     labelfont = ('times', 16, 'bold')  # family, size, style
-    exit_button = Button(root, text='Save/Exit', command=save_and_exit)
-    updategrid = Button(root, text='Update', command=lambda: update_grid(root, new_order)) #https://stackoverflow.com/a/6921225
 
+    exit_button = Button(root, text='Save/Exit', command=save_and_exit)
     exit_button.grid(column=1, columnspan=2, row=1)
-    updategrid.grid(column=3, columnspan=2, row=1)
+    update_grid_button = Button(root, text='Update', command=lambda: update_grid(root, new_order)) #https://stackoverflow.com/a/6921225
+    update_grid_button.grid(column=3, columnspan=2, row=1)
+
     set_grid(labelfont, root, new_order)
 
     root.mainloop()
 
 
 def set_grid(police, tkinter_racine, liste_caracteres):
+    """
+    Cette fonction permet d'organiser la grille par création d'instances de la classe `character`
+    qui sont des boutons dont la position est déterminée par cette fonction.
+    :param police:
+    :param tkinter_racine:
+    :param liste_caracteres:
+    :return:
+    """
     # Organisation de la grille
     n = 0
-    nombre_caractères = len(liste_caracteres)
     nombre_lignes = 11  # nombre de lignes de chaque colonne = hauteur de l'interface graphique.
-    nombre_colonnes = nombre_caractères // nombre_lignes
-
     for char in liste_caracteres:
         ligne = (n % nombre_lignes) + 2
         colonne = (n // nombre_lignes)
@@ -60,11 +66,7 @@ def update_grid(root, liste_caracteres):
     :param liste_caracteres:
     :return:
     """
-    print("Mise à jour de la grille.")
-    print(f"Ordre avant mise à jour: \n{liste_caracteres}")
     set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres))
-    print(stats_dict)
-    print(f"Ordre après mise à jour: \n{order_characters(liste_caracteres)}")
 
 
 def exit_app():
@@ -91,16 +93,16 @@ def order_characters(target_characters):
     # on transforme le dictionnaire en liste ordonnée par fréquence
     sorted_list = [pair[0] for pair in sorted(frequency_dict.items(), key=lambda item: item[1], reverse=True)]
 
-    # on ne garde parmi la liste ordonnée que les caractères qui sont présents dans les caractères
-    # demandés par l'utilisateur lors du lancement de la fonction
-    # TODO:: vérifier le problème de perte de caractères.
+    # ici on nettoie la liste triée et on ne garde que les éléments indiqués dans la liste définie par l'utilisateur/ice
     output_sorted_list = []
     for i in sorted_list:
         if i in target_characters:
             output_sorted_list.append(i)
         else:
             pass
-    # on veut ici récupérer les nouveaux caractères qui n'ont jamais été vus par le programme
+
+    # ici au contraire on supprime dans la liste définie les éléments qui sont présents dans la liste triée, car ce
+    # serait redondant.
     nouveaux_caracteres = []
     for i in target_characters:
         if i in output_sorted_list:
@@ -110,6 +112,7 @@ def order_characters(target_characters):
 
     # et on les ajoute à la fin de la liste ordonnée. 
     liste_finale_ordonnee = output_sorted_list + nouveaux_caracteres
+    print(len(liste_finale_ordonnee))
     return liste_finale_ordonnee
 
 
@@ -137,17 +140,14 @@ class character:
         On clique, on copie, on colle.
         :return: None
         """
-        global click_number
-        click_number += 1
-        print(click_number)
         save_frequency()
         print(f"You just clicked on {self.char}")
-        self.add_to_table(self.char)
+        self.add_to_frequency_table(self.char)
         pyperclip.copy(self.char)
         time.sleep(.5)
         pyautogui.hotkey("CTRL", "v")
 
-    def add_to_table(self, character):
+    def add_to_frequency_table(self, character):
         '''
         Ici on va avoir des statistiques sur les boutons les plus utilisés.
         De la sorte on pourra adapter la position de chaque bouton pour être
@@ -157,13 +157,12 @@ class character:
         '''
         try:
             stats_dict[character] += 1
-        except KeyError as error:
+        except KeyError as _:
             stats_dict[character] = 1
 
 
 if __name__ == '__main__':
 
-    click_number = 0
     try:
         with open('stats.json', 'r') as json_file:
             try:
@@ -179,4 +178,7 @@ if __name__ == '__main__':
     except FileNotFoundError as error:
         print("Veuillez créer le fichier characters.conf et y ajouter les caractères à afficher.")
         exit()
+
+
+
     main(characters)
