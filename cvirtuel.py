@@ -14,26 +14,33 @@ def main(characters):
     root.title("cvirtuel")
     labelfont = ('times', 16, 'bold')  # family, size, style
     exit_button = Button(root, text='Save/Exit', command=save_and_exit)
+    updategrid = Button(root, text='Update', command=lambda: update_grid(root, order_characters(characters))) #https://stackoverflow.com/a/6921225
+
     exit_button.grid(column=1, columnspan=2, row=1)
-
-    # Organisation de la grille
-    n = 0
-    nombre_caractères = len(new_order)
-    nombre_lignes = 11 # nombre de lignes de chaque colonne = hauteur de l'interface graphique.
-    nombre_colonnes = nombre_caractères // nombre_lignes
-
-    for char in new_order:
-        ligne = (n % nombre_lignes) + 2
-        colonne = (n // nombre_lignes)
-        character(char, root, labelfont, colonne, ligne)
-        n += 1
-
+    updategrid.grid(column=3, columnspan=2, row=1)
+    set_grid(labelfont, root, new_order)
 
     root.mainloop()
+
+
+def set_grid(police, tkinter_racine, liste_caracteres):
+    # Organisation de la grille
+    n = 0
+    nombre_caractères = len(liste_caracteres)
+    nombre_lignes = 11  # nombre de lignes de chaque colonne = hauteur de l'interface graphique.
+    nombre_colonnes = nombre_caractères // nombre_lignes
+
+    for char in liste_caracteres:
+        ligne = (n % nombre_lignes) + 2
+        colonne = (n // nombre_lignes)
+        character(char, tkinter_racine, police, colonne, ligne, liste_caracteres)
+        n += 1
+
 
 def save_and_exit():
     save_frequency()
     exit_app()
+
 
 def save_frequency():
     '''
@@ -44,6 +51,18 @@ def save_frequency():
     print(stats_dict)
     with open('stats.json', 'w') as json_file:
         json.dump(stats_dict, json_file)
+
+
+def update_grid(root, liste_caracteres):
+    """
+    Cette fonction met à jour la grille en fonction de la fréquence.
+    :param root:
+    :param liste_caracteres:
+    :return:
+    """
+    print("Mise à jour de la grille.")
+    set_grid(('times', 16, 'bold'), root, liste_caracteres)
+
 
 def exit_app():
     exit(0)
@@ -72,6 +91,7 @@ def order_characters(target_characters):
 
     # on ne garde parmi la liste ordonnée que les caractères qui sont présents dans les caractères
     # demandés par l'utilisateur lors du lancement de la fonction
+    # TODO:: vérifier le problème de perte de caractères.
     output_sorted_list = []
     for i in sorted_list:
         print(i)
@@ -99,9 +119,12 @@ class character:
     dans le presse-papier quand on clique dessus.
     '''
 
-    def __init__(self, char, root, labelfont, column, row):
+    def __init__(self, char, root, labelfont, column, row, liste_caracteres):
         self.position = [column, row]
         self.char = char
+        self.root = root
+        self.character_list = liste_caracteres
+        self.labelfont = labelfont
         self.button = Button(root, text=self.char, command=self.click)
         self.button.grid(column=column, row=row)
         self.button.config(font=labelfont, height=1, width=3)
@@ -117,8 +140,7 @@ class character:
         global click_number
         click_number += 1
         print(click_number)
-        if click_number % 20 == 0:
-            save_frequency()
+        save_frequency()
         print(f"You just clicked on {self.char}")
         self.add_to_table(self.char)
         pyperclip.copy(self.char)
