@@ -21,9 +21,6 @@ def main(characters):
     nombre_caractères = len(new_order)
     nombre_lignes = 11 # nombre de lignes de chaque colonne = hauteur de l'interface graphique.
     nombre_colonnes = nombre_caractères // nombre_lignes
-    reste = nombre_caractères % nombre_colonnes
-    print(f"Nombre de lignes: {nombre_lignes}\n Nombre de caracteres: {nombre_caractères}"
-          f"\n Nombre de caractères en excès: {reste}")
 
     for char in new_order:
         ligne = (n % nombre_lignes) + 2
