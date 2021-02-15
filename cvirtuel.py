@@ -14,7 +14,7 @@ def main(characters):
     root.title("cvirtuel")
     labelfont = ('times', 16, 'bold')  # family, size, style
     exit_button = Button(root, text='Save/Exit', command=save_and_exit)
-    updategrid = Button(root, text='Update', command=lambda: update_grid(root, order_characters(characters))) #https://stackoverflow.com/a/6921225
+    updategrid = Button(root, text='Update', command=lambda: update_grid(root, new_order)) #https://stackoverflow.com/a/6921225
 
     exit_button.grid(column=1, columnspan=2, row=1)
     updategrid.grid(column=3, columnspan=2, row=1)
@@ -61,7 +61,10 @@ def update_grid(root, liste_caracteres):
     :return:
     """
     print("Mise à jour de la grille.")
-    set_grid(('times', 16, 'bold'), root, liste_caracteres)
+    print(f"Ordre avant mise à jour: \n{liste_caracteres}")
+    set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres))
+    print(stats_dict)
+    print(f"Ordre après mise à jour: \n{order_characters(liste_caracteres)}")
 
 
 def exit_app():
@@ -85,7 +88,6 @@ def order_characters(target_characters):
         with open('stats.json', 'w') as json_file:
             frequency_dict = {}
             json.dump(frequency_dict, json_file)
-    print(frequency_dict)
     # on transforme le dictionnaire en liste ordonnée par fréquence
     sorted_list = [pair[0] for pair in sorted(frequency_dict.items(), key=lambda item: item[1], reverse=True)]
 
@@ -94,12 +96,10 @@ def order_characters(target_characters):
     # TODO:: vérifier le problème de perte de caractères.
     output_sorted_list = []
     for i in sorted_list:
-        print(i)
         if i in target_characters:
-            print(f"{i} is in target_characters")
             output_sorted_list.append(i)
         else:
-            print(f"removing {i}")
+            pass
     # on veut ici récupérer les nouveaux caractères qui n'ont jamais été vus par le programme
     nouveaux_caracteres = []
     for i in target_characters:
