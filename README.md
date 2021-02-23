@@ -16,7 +16,7 @@ source env_clavier_virtuel/bin/activate
 pip3 install -r requirements.txt
 ```
 
-Les caractères à représenter sont à ajouter au fichier characters.conf; ils doivent être séparés par des virgules.
+Les caractères à représenter sont à ajouter au fichier `characters.conf`; ils doivent être séparés par des virgules.
 
 ## Utilisation
 
@@ -29,3 +29,4 @@ déclenche, le caractère est copié dans le presse-papier et sera collé 0.5s a
 
 Le programme ajuste la position des caractères en fonction de la fréquence de 
 leur utilisation.
+
