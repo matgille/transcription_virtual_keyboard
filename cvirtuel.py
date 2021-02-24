@@ -5,6 +5,7 @@ import pyperclip
 import json
 import time
 
+# TODO: régler le problème de position et de taille du formulaire de recherche.
 
 class VirtualKeyboard:
     def __init__(self, characters):
@@ -19,14 +20,14 @@ class VirtualKeyboard:
 
         exit_button = Button(root, text='Save/Exit', command=save_and_exit)
         exit_button.grid(column=0, columnspan=2, row=1)
-        update_grid_button = Button(root, text='Update',
+        update_grid_button = Button(root, text='Reorder',
                                     command=lambda: update_grid(root, new_order,
                                                                 default_bg_color))  # https://stackoverflow.com/a/6921225
         update_grid_button.grid(column=2, columnspan=2, row=1)
         search_form = Entry(root, textvariable='Search')
         search_form.grid(row=1, column=6, columnspan=1)
         search_form.config(fg='grey')
-        search_form.insert(END, "Search combined chars")  # voir https://stackoverflow.com/a/51781808 pour continuer
+        search_form.insert(END, "Search combined chars")
 
         global liste_object_character
         liste_object_character = set_grid(labelfont, root, new_order, default_bg_color)
@@ -38,6 +39,12 @@ class VirtualKeyboard:
 
 
 def get_character(form, liste):
+    """
+    Cette fonction récupère le caractère cherché dans le formulaire et active la fonction de surbrillance.
+    :param form: le formulaire qui est un objet Entry
+    :param liste: la liste d'objets des objets de classe character.
+    :return: None
+    """
     print(f"Searched character: {form.get()}")
     searched_character = form.get()
     find_char_and_colour_it(searched_character, liste)
@@ -76,28 +83,31 @@ def set_grid(police, tkinter_racine, liste_caracteres, default_bg_color):
         ligne = (n % nombre_lignes) + 2
         colonne = (n // nombre_lignes)
         list_char_objects.append(
-            character(char, tkinter_racine, police, colonne, ligne, liste_caracteres, default_bg_color)
+            Character(char, tkinter_racine, police, colonne, ligne, liste_caracteres, default_bg_color)
         )
         n += 1
     return list_char_objects
 
+
 # https://stackoverflow.com/a/51781808
-def handle_focus_in(search_form):
+def handle_focus_in(search_form):  # https://stackoverflow.com/a/51781808
     search_form.delete(0, END)
     search_form.config(fg='black')
     search_form.focus_set()
 
-def handle_focus_out(search_form, root):
+
+def handle_focus_out(search_form, root):  # https://stackoverflow.com/a/51781808
+
     search_form.delete(0, END)
     search_form.config(fg='grey')
     search_form.insert(0, "Search combined chars")
     root.focus()
 
+
 def clean_color(default_bg_color):
     global liste_object_character
     for character_object in liste_object_character:
         character_object.button.config(bg=default_bg_color)
-
 
 
 def save_and_exit():
@@ -175,7 +185,7 @@ def order_characters(target_characters):
     return liste_finale_ordonnee
 
 
-class character:
+class Character:
     '''
     Crée un objet "caractère" qui est un bouton clickable qui enregistre la valeur
     dans le presse-papier quand on clique dessus.
@@ -200,7 +210,7 @@ class character:
         :return: None
         """
         save_frequency()
-        clean_color(default_bg_color)
+        clean_color(default_bg_color)  # on réinitialise la couleur de tous les boutons.
         print(f"You just clicked on {self.char}")
         self.add_to_frequency_table(self.char)
         pyperclip.copy(self.char)
