@@ -6,7 +6,7 @@ d'écritures manuscrites médiévales comprenant des abréviations et des caract
 non utilisés. Il est utile en combinaison avec des outils comme eScriptorium par exemple 
 ([dépôt git](https://gitlab.inria.fr/scripta/escriptorium)).
 
-![Clavier virtuel](img/cvirtuel.png)
+![Clavier virtuel](img/cvirtuel.gif)
 
 ## Installation
 
