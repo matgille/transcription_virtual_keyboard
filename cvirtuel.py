@@ -25,7 +25,7 @@ class VirtualKeyboard:
         search_form = Entry(root, textvariable='Search')
         search_form.grid(row=1, column=6, columnspan=1)
         search_form.config(fg='grey')
-        search_form.insert(END, "Search combined chars")
+        search_form.insert(END, "Search for combining chars")
 
         # On crée une variable globale pour pouvoir la modifier à l'intérieur de la classe. Je ne sais pas si c'est
         # très pythonique !
