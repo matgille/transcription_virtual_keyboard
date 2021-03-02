@@ -103,7 +103,7 @@ def handle_focus_out(search_form, root):  # https://stackoverflow.com/a/51781808
 
     search_form.delete(0, END)
     search_form.config(fg='grey')
-    search_form.insert(0, "Search combined chars")
+    search_form.insert(0, "Search for combining chars")
     root.focus()
 
 
