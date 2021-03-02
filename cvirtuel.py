@@ -8,37 +8,37 @@ import time
 # TODO: régler le problème de position et de taille du formulaire de recherche.
 
 class VirtualKeyboard:
-    def __init__(self, characters):
-        print(f"There are {len(characters)} characters")
+    def __init__(self, characters, height, labelfont):
         new_order = order_characters(characters)
         print(f"Target characters:\n{characters}")
         print(f"New order:\n{new_order}")
         root = Tk()
         root.title("cvirtuel")
-        labelfont = ('times', 16, 'bold')  # family, size, style
         default_bg_color = root.cget('bg')
 
         exit_button = Button(root, text='Save/Exit', command=save_and_exit)
         exit_button.grid(column=0, columnspan=2, row=1)
         update_grid_button = Button(root, text='Reorder',
                                     command=lambda: update_grid(root, new_order,
-                                                                default_bg_color))  # https://stackoverflow.com/a/6921225
+                                                                default_bg_color, height))  # https://stackoverflow.com/a/6921225
         update_grid_button.grid(column=2, columnspan=2, row=1)
         search_form = Entry(root, textvariable='Search')
         search_form.grid(row=1, column=6, columnspan=1)
         search_form.config(fg='grey')
         search_form.insert(END, "Search combined chars")
 
+        # On crée une variable globale pour pouvoir la modifier à l'intérieur de la classe. Je ne sais pas si c'est
+        # très pythonique !
         global liste_object_character
-        liste_object_character = set_grid(labelfont, root, new_order, default_bg_color)
+        liste_object_character = set_grid(labelfont, root, new_order, default_bg_color, height)
 
-        root.bind('<Return>', lambda _: get_character(search_form, liste_object_character))
+        root.bind('<Return>', lambda _: get_character(search_form, liste_object_character, default_bg_color))
         search_form.bind("<Enter>", lambda _: handle_focus_in(search_form))
         search_form.bind("<Leave>", lambda _: handle_focus_out(search_form, root))
         root.mainloop()
 
 
-def get_character(form, liste):
+def get_character(form, liste, default_bg_color):
     """
     Cette fonction récupère le caractère cherché dans le formulaire et active la fonction de surbrillance.
     :param form: le formulaire qui est un objet Entry
@@ -46,6 +46,7 @@ def get_character(form, liste):
     :return: None
     """
     print(f"Searched character: {form.get()}")
+    clean_color(default_bg_color)
     searched_character = form.get()
     find_char_and_colour_it(searched_character, liste)
 
@@ -66,10 +67,12 @@ def find_char_and_colour_it(character, liste):
         liste[button].button.config(bg='red')
 
 
-def set_grid(police, tkinter_racine, liste_caracteres, default_bg_color):
+def set_grid(police, tkinter_racine, liste_caracteres, default_bg_color, hauteur):
     """
     Cette fonction permet d'organiser la grille par création d'instances de la classe `character`
     qui sont des boutons dont la position est déterminée par cette fonction.
+    :param default_bg_color:
+    :param hauteur:
     :param police:
     :param tkinter_racine:
     :param liste_caracteres:
@@ -77,7 +80,7 @@ def set_grid(police, tkinter_racine, liste_caracteres, default_bg_color):
     """
     # Organisation de la grille
     n = 0
-    nombre_lignes = 11  # nombre de lignes de chaque colonne: hauteur de l'interface graphique.
+    nombre_lignes = hauteur  # nombre de lignes de chaque colonne: hauteur de l'interface graphique.
     list_char_objects = []
     for char in liste_caracteres:
         ligne = (n % nombre_lignes) + 2
@@ -126,16 +129,17 @@ def save_frequency():
         json.dump(stats_dict, json_file)
 
 
-def update_grid(root, liste_caracteres, default_bg_color):
+def update_grid(root, liste_caracteres, default_bg_color, hauteur):
     """
     Cette fonction met à jour la grille en fonction de la fréquence ainsi que la liste d'objets de classe character.
+    :param hauteur: hauteur de la grille
     :param default_bg_color: La couleur du fond produite par défaut
     :param root: l'instance tkinter produite
     :param liste_caracteres: la liste de caractères originelle.
     :return:None
     """
     global liste_object_character
-    liste_object_character = set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres), default_bg_color)
+    liste_object_character = set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres), default_bg_color, hauteur)
 
 
 def exit_app():
@@ -249,4 +253,4 @@ if __name__ == '__main__':
         print("Veuillez créer le fichier characters.conf et y ajouter les caractères à afficher.")
         exit()
 
-    VirtualKeyboard(characters)
+    VirtualKeyboard(characters, height=15, labelfont=('times', 16, 'bold'))
