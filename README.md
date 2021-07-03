@@ -32,3 +32,23 @@ déclenche, le caractère est copié dans le presse-papier et sera collé 0.5s a
 Le programme ajuste la position des caractères en fonction de la fréquence de 
 leur utilisation.
 
+
+## Citer ce dépôt
+
+```
+@softwareversion{gillelevenson:hal-03156769v1,
+  TITLE = {{ClaViTranscr: clavier virtuel d'aide {\`a} la transcription de caract{\`e}re sp{\'e}ciaux.}},
+  AUTHOR = {Gille Levenson, Matthias},
+  URL = {https://hal.archives-ouvertes.fr/hal-03156769},
+  YEAR = {2021},
+  MONTH = Mar,
+  VERSION = {v1.0.1},
+  REPOSITORY = {https://gitlab.huma-num.fr/mgillelevenson/clavier_virtuel_transcription},
+  LICENSE = {GNU Affero General Public License v3.0},
+  KEYWORDS = {{\'e}criture manuscrite ; imprim{\'e}s modernes ; caract{\`e}res typographiques ; caract{\`e}res sp{\'e}ciaux ; transcription ; {\'e}criture manuscrite},
+  FILE = {https://hal.archives-ouvertes.fr/hal-03156769/file/clavier_virtuel_transcription-v1.0.1.zip},
+  HAL_ID = {hal-03156769},
+  HAL_VERSION = {v1},
+}
+```
+
