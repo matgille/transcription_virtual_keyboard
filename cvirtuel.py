@@ -1,9 +1,10 @@
-#!/usr/bin/env python3.7
 from tkinter import *
 import pyautogui
 import pyperclip
 import json
 import time
+import sys
+
 
 # TODO: régler le problème de position et de taille du formulaire de recherche.
 
@@ -20,12 +21,21 @@ class VirtualKeyboard:
         exit_button.grid(column=0, columnspan=2, row=1)
         update_grid_button = Button(root, text='Reorder',
                                     command=lambda: update_grid(root, new_order,
-                                                                default_bg_color, height))  # https://stackoverflow.com/a/6921225
+                                                                default_bg_color,
+                                                                height))  # https://stackoverflow.com/a/6921225
         update_grid_button.grid(column=2, columnspan=2, row=1)
+
+        # Chars search form
         search_form = Entry(root, textvariable='Search')
         search_form.grid(row=1, column=6, columnspan=1)
         search_form.config(fg='grey')
         search_form.insert(END, "Search for combining chars")
+
+        # Chars adding form
+        # add_form = Entry(root, textvariable='Add')
+        # add_form.grid(row=1, column=8, columnspan=1)
+        # add_form.config(fg='grey')
+        # add_form.insert(END, "Add new character")
 
         # On crée une variable globale pour pouvoir la modifier à l'intérieur de la classe. Je ne sais pas si c'est
         # très pythonique !
@@ -34,7 +44,11 @@ class VirtualKeyboard:
 
         root.bind('<Return>', lambda _: get_character(search_form, liste_object_character, default_bg_color))
         search_form.bind("<Enter>", lambda _: handle_focus_in(search_form))
-        search_form.bind("<Leave>", lambda _: handle_focus_out(search_form, root))
+        search_form.bind("<Leave>", lambda _: handle_focus_out(search_form, root, message="Search for combining chars"))
+
+        # root.bind('<Return>', lambda _: add_character(add_form, default_bg_color))
+        # add_form.bind("<Enter>", lambda _: handle_focus_in(add_form))
+        # add_form.bind("<Leave>", lambda _: handle_focus_out(add_form, root, message="Add new character"))
         root.mainloop()
 
 
@@ -49,6 +63,26 @@ def get_character(form, liste, default_bg_color):
     clean_color(default_bg_color)
     searched_character = form.get()
     find_char_and_colour_it(searched_character, liste)
+
+def add_character(form, default_bg_color):
+    """
+    Cette fonction récupère le caractère cherché dans le formulaire et active la fonction de surbrillance.
+    :param form: le formulaire qui est un objet Entry
+    :param liste: la liste d'objets des objets de classe character.
+    :return: None
+    """
+    print(f"Added character: {form.get()}")
+    clean_color(default_bg_color)
+    char_to_add_character = form.get()
+    if len(char_to_add_character) == 1:
+        with open("characters.med.conf", "r") as orig_chars:
+            updated = orig_chars.read().replace("\n", "") + "," + char_to_add_character
+        with open("characters.med.conf", "w") as updated_chars:
+            updated_chars.write(updated)
+    else:
+        return
+
+
 
 
 def find_char_and_colour_it(character, liste):
@@ -99,11 +133,10 @@ def handle_focus_in(search_form):  # https://stackoverflow.com/a/51781808
     search_form.focus_set()
 
 
-def handle_focus_out(search_form, root):  # https://stackoverflow.com/a/51781808
-
+def handle_focus_out(search_form, root, message):  # https://stackoverflow.com/a/51781808
     search_form.delete(0, END)
     search_form.config(fg='grey')
-    search_form.insert(0, "Search for combining chars")
+    search_form.insert(0, message)
     root.focus()
 
 
@@ -139,7 +172,8 @@ def update_grid(root, liste_caracteres, default_bg_color, hauteur):
     :return:None
     """
     global liste_object_character
-    liste_object_character = set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres), default_bg_color, hauteur)
+    liste_object_character = set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres), default_bg_color,
+                                      hauteur)
 
 
 def exit_app():
@@ -236,7 +270,7 @@ class Character:
 
 
 if __name__ == '__main__':
-
+    chars_files = sys.argv[1]
     try:
         with open('stats.json', 'r') as json_file:
             try:
@@ -247,10 +281,10 @@ if __name__ == '__main__':
         stats_dict = {}
 
     try:
-        with open("characters.conf", "r") as chars_file:
+        with open(chars_files, "r") as chars_file:
             characters = chars_file.read().replace(' ', '').replace('\n', '').split(',')
     except FileNotFoundError as error:
         print("Veuillez créer le fichier characters.conf et y ajouter les caractères à afficher.")
         exit()
 
-    VirtualKeyboard(characters, height=15, labelfont=('times', 16, 'bold'))
+    VirtualKeyboard(characters, height=8, labelfont=('times', 16, 'bold'))
