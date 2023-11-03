@@ -1,3 +1,4 @@
+import unicodedata
 from tkinter import *
 import pyautogui
 import pyperclip
@@ -9,10 +10,11 @@ import sys
 # TODO: régler le problème de position et de taille du formulaire de recherche.
 
 class VirtualKeyboard:
-    def __init__(self, characters, height, labelfont):
+    def __init__(self, characters, height, labelfont, char_file):
         new_order = order_characters(characters)
         print(f"Target characters:\n{characters}")
         print(f"New order:\n{new_order}")
+        self.font_size = 20
         root = Tk()
         root.title("cvirtuel")
         default_bg_color = root.cget('bg')
@@ -22,14 +24,28 @@ class VirtualKeyboard:
         update_grid_button = Button(root, text='Reorder',
                                     command=lambda: update_grid(root, new_order,
                                                                 default_bg_color,
-                                                                height))  # https://stackoverflow.com/a/6921225
+                                                                height,
+                                                                self.font_size))  # https://stackoverflow.com/a/6921225
         update_grid_button.grid(column=2, columnspan=2, row=1)
+        increase_size = Button(root, text='+', command=lambda: self.increase_font_size(root, new_order,
+                                                                                       default_bg_color,
+                                                                                       height))
+        increase_size.grid(column=8, columnspan=2, row=1)
+        decrease_size = Button(root, text='-', command=lambda: self.decrease_font_size(root, new_order,
+                                                                                       default_bg_color,
+                                                                                       height))
+        decrease_size.grid(column=10, columnspan=2, row=1)
 
         # Chars search form
         search_form = Entry(root, textvariable='Search')
         search_form.grid(row=1, column=6, columnspan=1)
         search_form.config(fg='grey')
         search_form.insert(END, "Search for combining chars")
+
+        add_form = Entry(root, textvariable='Add')
+        add_form.grid(row=1, column=13, columnspan=1)
+        add_form.config(fg='grey')
+        add_form.insert(END, "Add combination")
 
         # Chars adding form
         # add_form = Entry(root, textvariable='Add')
@@ -46,10 +62,45 @@ class VirtualKeyboard:
         search_form.bind("<Enter>", lambda _: handle_focus_in(search_form))
         search_form.bind("<Leave>", lambda _: handle_focus_out(search_form, root, message="Search for combining chars"))
 
+        add_form.bind('<Return>', lambda _: add_character(add_form, default_bg_color, root, height, self.font_size, char_file))
+        add_form.bind("<Enter>", lambda _: handle_focus_in(add_form))
+        add_form.bind("<Leave>", lambda _: handle_focus_out(add_form, root, message="Add combining chars"))
+
         # root.bind('<Return>', lambda _: add_character(add_form, default_bg_color))
         # add_form.bind("<Enter>", lambda _: handle_focus_in(add_form))
         # add_form.bind("<Leave>", lambda _: handle_focus_out(add_form, root, message="Add new character"))
+        root.resizable(height=1, width=1)
         root.mainloop()
+
+    def increase_font_size(self, root, liste_caracteres, default_bg_color, hauteur):
+        """
+        Cette fonction met à jour la grille en fonction de la fréquence ainsi que la liste d'objets de classe character.
+        :param hauteur: hauteur de la grille
+        :param default_bg_color: La couleur du fond produite par défaut
+        :param root: l'instance tkinter produite
+        :param liste_caracteres: la liste de caractères originelle.
+        :return:None
+        """
+        global liste_object_character
+        liste_object_character = set_grid(('Helvetica', self.font_size + 5, 'bold'), root,
+                                          order_characters(liste_caracteres),
+                                          default_bg_color,
+                                          hauteur)
+
+    def decrease_font_size(self, root, liste_caracteres, default_bg_color, hauteur):
+        """
+        Cette fonction met à jour la grille en fonction de la fréquence ainsi que la liste d'objets de classe character.
+        :param hauteur: hauteur de la grille
+        :param default_bg_color: La couleur du fond produite par défaut
+        :param root: l'instance tkinter produite
+        :param liste_caracteres: la liste de caractères originelle.
+        :return:None
+        """
+        global liste_object_character
+        liste_object_character = set_grid(('Helvetica', self.font_size - 5, 'bold'), root,
+                                          order_characters(liste_caracteres),
+                                          default_bg_color,
+                                          hauteur)
 
 
 def get_character(form, liste, default_bg_color):
@@ -64,7 +115,8 @@ def get_character(form, liste, default_bg_color):
     searched_character = form.get()
     find_char_and_colour_it(searched_character, liste)
 
-def add_character(form, default_bg_color):
+
+def add_character(form, default_bg_color, root, height, font_size, char_file):
     """
     Cette fonction récupère le caractère cherché dans le formulaire et active la fonction de surbrillance.
     :param form: le formulaire qui est un objet Entry
@@ -74,15 +126,18 @@ def add_character(form, default_bg_color):
     print(f"Added character: {form.get()}")
     clean_color(default_bg_color)
     char_to_add_character = form.get()
-    if len(char_to_add_character) == 1:
-        with open("characters.med.conf", "r") as orig_chars:
-            updated = orig_chars.read().replace("\n", "") + "," + char_to_add_character
-        with open("characters.med.conf", "w") as updated_chars:
+    with open(char_file, "r") as orig_chars:
+        chars = updated = orig_chars.read().split(",")
+    if char_to_add_character != "" and char_to_add_character not in chars:
+        updated = ",".join(chars).replace("\n", "") + "," + char_to_add_character
+        with open(char_file, "w") as updated_chars:
             updated_chars.write(updated)
-    else:
-        return
-
-
+        print(updated_chars)
+        new_chars = updated.split(",")
+        update_grid(root, new_chars,
+                    default_bg_color,
+                    height,
+                    font_size)
 
 
 def find_char_and_colour_it(character, liste):
@@ -99,6 +154,13 @@ def find_char_and_colour_it(character, liste):
     for button in matching_button_objects_index:
         print(liste[button].char)
         liste[button].button.config(bg='red')
+
+
+def get_first_chars_from_combining(liste_caracteres):
+    print(liste_caracteres)
+    main_chars = set([unicodedata.normalize("NFD", char)[0] for char in liste_caracteres])
+    combining_chars = set([unicodedata.normalize("NFD", char)[1] for char in liste_caracteres if len(char) > 1])
+    return main_chars, combining_chars
 
 
 def set_grid(police, tkinter_racine, liste_caracteres, default_bg_color, hauteur):
@@ -162,7 +224,7 @@ def save_frequency():
         json.dump(stats_dict, json_file)
 
 
-def update_grid(root, liste_caracteres, default_bg_color, hauteur):
+def update_grid(root, liste_caracteres, default_bg_color, hauteur, font_size):
     """
     Cette fonction met à jour la grille en fonction de la fréquence ainsi que la liste d'objets de classe character.
     :param hauteur: hauteur de la grille
@@ -172,7 +234,8 @@ def update_grid(root, liste_caracteres, default_bg_color, hauteur):
     :return:None
     """
     global liste_object_character
-    liste_object_character = set_grid(('times', 16, 'bold'), root, order_characters(liste_caracteres), default_bg_color,
+    liste_object_character = set_grid(('Helvetica', font_size, 'bold'), root, order_characters(liste_caracteres),
+                                      default_bg_color,
                                       hauteur)
 
 
@@ -283,8 +346,8 @@ if __name__ == '__main__':
     try:
         with open(chars_files, "r") as chars_file:
             characters = chars_file.read().replace(' ', '').replace('\n', '').split(',')
+        print(get_first_chars_from_combining(characters))
     except FileNotFoundError as error:
         print("Veuillez créer le fichier characters.conf et y ajouter les caractères à afficher.")
         exit()
-
-    VirtualKeyboard(characters, height=8, labelfont=('times', 16, 'bold'))
+    VirtualKeyboard(characters, height=4, labelfont=('times', 16, 'bold'), char_file=chars_files)
