@@ -13,12 +13,12 @@ non utilisés. Il est utile en combinaison avec des outils comme eScriptorium pa
 ```
 git clone https://gitlab.huma-num.fr/mgillelevenson/clavier_virtuel_transcription.git
 cd clavier_virtuel_transcription
-python3 -m venv env_clavier_virtuel
+python3 -m venv env_clavier_virtuel chars/characters.graphematic.conf
 source env_clavier_virtuel/bin/activate
 pip3 install -r requirements.txt
 ```
 
-Les caractères à représenter sont à ajouter au fichier `characters.conf`; ils doivent être séparés par des virgules.
+Les caractères à représenter sont à ajouter au fichier `.conf`; ils doivent être séparés par des virgules.
 
 ## Utilisation
 
