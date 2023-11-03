@@ -13,7 +13,7 @@ non utilisés. Il est utile en combinaison avec des outils comme eScriptorium pa
 ```
 git clone https://gitlab.huma-num.fr/mgillelevenson/clavier_virtuel_transcription.git
 cd clavier_virtuel_transcription
-python3 -m venv env_clavier_virtuel chars/characters.graphematic.conf
+python3 -m venv env_clavier_virtuel 
 source env_clavier_virtuel/bin/activate
 pip3 install -r requirements.txt
 ```
@@ -23,7 +23,7 @@ Les caractères à représenter sont à ajouter au fichier `.conf`; ils doivent 
 ## Utilisation
 
 ```
-python3 cvirtuel.py
+python3 cvirtuel.py chars/characters.graphematic.conf
 ```
 
 L'interface graphique apparaît, en cliquant sur chaque caractère, un compteur se 
