@@ -4,7 +4,7 @@
 Ce programme permet d'afficher un clavier virtuel, conçu à faciliter la transcription
 d'écritures manuscrites médiévales comprenant des abréviations et des caractères aujourd'hui
 non utilisés. Il est utile en combinaison avec des outils comme eScriptorium par exemple 
-([dépôt git](https://gitlab.inria.fr/scripta/escriptorium)).
+([dépôt git](https://gitlab.com/scripta/escriptorium/)).
 
 ![Clavier virtuel](img/cvirtuel.gif)
 
